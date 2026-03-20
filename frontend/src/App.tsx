@@ -70,12 +70,12 @@ function App() {
     <div className="app-container">
       <header className="header">
         <div className="logo-section">
-          <Shield size={32} color="#4facfe" />
+          <Shield size={28} className="text-primary" />
           <h1 className="logo-text">GigGuard AI</h1>
         </div>
         <div className="rider-badge">
-          <Activity size={16} color="#00f2fe" />
-          <span>Rider Active: {rider.id} | {rider.zone}</span>
+          <Activity size={16} />
+          <span>Active: {rider.id} ({rider.zone})</span>
         </div>
       </header>
 
@@ -83,10 +83,10 @@ function App() {
         {/* Onboarding & Risk AI */}
         <div className="glass-card">
           <div className="card-header">
-            <ShieldAlert />
+            <ShieldAlert className="text-primary" size={24} />
             <h2>AI Policy Engine</h2>
           </div>
-          <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem'}}>Parametric pricing calculated dynamically based on historical API data.</p>
+          <p className="card-desc">Parametric pricing calculated dynamically based on historical API data.</p>
           
           <div className="control-group">
              <label>Operating Zone</label>
@@ -105,15 +105,15 @@ function App() {
              </select>
           </div>
 
-          <button className="btn btn-primary" onClick={handleRiskProfile}>
-            {loading === 'premium' ? 'Calculating AI Model...' : 'Assess Risk & Price Premium'}
+          <button className="btn btn-primary" onClick={handleRiskProfile} disabled={loading === 'premium'}>
+            {loading === 'premium' ? 'Calculating Model...' : 'Assess Risk & Price Premium'}
           </button>
 
           {premiumData && (
             <div className="result-box">
               <div className="metric-row">
                 <span className="metric-label">Weekly Premium</span>
-                <span className="metric-value" style={{color: '#4facfe'}}>₹{premiumData.weekly_premium_inr} / wk</span>
+                <span className="metric-value text-primary">₹{premiumData.weekly_premium_inr} / wk</span>
               </div>
               <div className="metric-row">
                 <span className="metric-label">Max Daily Payout</span>
@@ -130,13 +130,13 @@ function App() {
         {/* Parametric Trigger Engine */}
         <div className="glass-card">
           <div className="card-header">
-            <CloudLightning color="#ff4b2b" />
+            <CloudLightning className="text-danger" size={24} />
             <h2>Weather Disruptions</h2>
           </div>
-          <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem'}}>Simulate an external real-time webhook (e.g., OpenWeather) hitting the parametric trigger API.</p>
+          <p className="card-desc">Simulate an external real-time webhook (e.g., OpenWeather) hitting the parametric trigger API.</p>
 
-          <button className="btn btn-danger" onClick={simulateTrigger} disabled={!premiumData}>
-             {loading === 'trigger' ? 'Polling Weather APIs...' : 'Simulate Live Weather Event'}
+          <button className="btn btn-danger" onClick={simulateTrigger} disabled={!premiumData || loading === 'trigger'}>
+             {loading === 'trigger' ? 'Polling Weather...' : 'Simulate Live Weather Event'}
           </button>
 
           {claimStatus && (
@@ -150,9 +150,9 @@ function App() {
                 <span className="metric-value">{claimStatus.reason}</span>
               </div>
               {claimStatus.status === 'TRIGGERED' && (
-                <div className="metric-row" style={{marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '0.5rem'}}>
-                  <span className="metric-label" style={{color: '#ff4b2b', fontWeight: 'bold'}}>Automated Payout</span>
-                  <span className="metric-value" style={{color: '#ff4b2b'}}>₹{claimStatus.payout_amount}</span>
+                <div className="metric-row" style={{marginTop: '0.75rem', borderTop: '1px solid var(--border-color)', paddingTop: '0.75rem'}}>
+                  <span className="metric-label" style={{fontWeight: '600'}}>Automated Payout</span>
+                  <span className="metric-value text-danger">₹{claimStatus.payout_amount}</span>
                 </div>
               )}
             </div>
@@ -162,13 +162,13 @@ function App() {
         {/* Fraud Detection */}
         <div className="glass-card">
           <div className="card-header">
-            <CheckCircle color="#00b09b" />
+            <CheckCircle className="text-success" size={24} />
             <h2>Fraud Validation</h2>
           </div>
-          <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem'}}>Ensure the payout is legitimate: block duplicate requests and validate GPS location.</p>
+          <p className="card-desc">Ensure the payout is legitimate: block duplicate requests and validate GPS location.</p>
 
-          <button className="btn btn-warning" onClick={handleFraudCheck} disabled={!claimStatus || claimStatus.status !== 'TRIGGERED'}>
-            {loading === 'fraud' ? 'Validating Telemetry...' : 'Run Fraud Detection Algorithm'}
+          <button className="btn btn-warning" onClick={handleFraudCheck} disabled={!claimStatus || claimStatus.status !== 'TRIGGERED' || loading === 'fraud'}>
+            {loading === 'fraud' ? 'Validating...' : 'Run Fraud Detection Algorithm'}
           </button>
 
           {fraudData && (
@@ -181,7 +181,7 @@ function App() {
               </div>
               <div className="metric-row">
                 <span className="metric-label">System Note</span>
-                <span className="metric-value">{fraudData.reason}</span>
+                <span className="metric-value" style={{fontSize: '0.875rem'}}>{fraudData.reason}</span>
               </div>
             </div>
           )}
@@ -190,19 +190,19 @@ function App() {
         {/* Analytics Dashboard */}
         <div className="glass-card" style={{gridColumn: '1 / -1'}}>
           <div className="card-header">
-            <Activity color="#f6d365" />
+            <Activity className="text-primary" size={24} />
             <h2>Platform Analytics (Admin)</h2>
           </div>
-          <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem'}}>Real-time metrics for Guidewire core systems.</p>
+          <p className="card-desc">Real-time metrics for Guidewire core systems.</p>
           <div className="grid">
-             <div className="result-box">
-                <div className="metric-row"><span className="metric-label">Active Policies</span><span className="metric-value" style={{color: '#4facfe'}}>12,450</span></div>
+             <div className="result-box" style={{marginTop: 0}}>
+                <div className="metric-row"><span className="metric-label">Active Policies</span><span className="metric-value text-primary">12,450</span></div>
              </div>
-             <div className="result-box">
-                <div className="metric-row"><span className="metric-label">Total Premiums (Wk)</span><span className="metric-value" style={{color: '#00b09b'}}>₹4.2M</span></div>
+             <div className="result-box" style={{marginTop: 0}}>
+                <div className="metric-row"><span className="metric-label">Total Premiums (Wk)</span><span className="metric-value text-success">₹4.2M</span></div>
              </div>
-             <div className="result-box">
-                <div className="metric-row"><span className="metric-label">Recent Triggers</span><span className="metric-value" style={{color: '#ff4b2b'}}>142</span></div>
+             <div className="result-box" style={{marginTop: 0}}>
+                <div className="metric-row"><span className="metric-label">Recent Triggers</span><span className="metric-value text-danger">142</span></div>
              </div>
           </div>
         </div>
