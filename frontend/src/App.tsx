@@ -1,121 +1,215 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from 'react';
+import { Shield, CloudLightning, Activity, ShieldAlert, CheckCircle } from 'lucide-react';
+import './index.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [rider, setRider] = useState({ id: 'ZOM-10492', zone: 'Whitefield', vehicle: 'EV', earnings: 1200 });
+  const [premiumData, setPremiumData] = useState<any>(null);
+  const [claimStatus, setClaimStatus] = useState<any>(null);
+  const [fraudData, setFraudData] = useState<any>(null);
+  const [loading, setLoading] = useState('');
+
+  const handleRiskProfile = async () => {
+    setLoading('premium');
+    try {
+      const res = await fetch('http://localhost:8000/api/risk/calculate-premium', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rider_id: rider.id,
+          zone: rider.zone,
+          vehicle_type: rider.vehicle,
+          avg_daily_earnings: rider.earnings
+        })
+      });
+      const data = await res.json();
+      setPremiumData(data);
+    } catch(e) { console.error(e); }
+    setLoading('');
+  };
+
+  const simulateTrigger = async () => {
+    setLoading('trigger');
+    try {
+      const res = await fetch('http://localhost:8000/api/trigger/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          policy_id: 'POL-99120',
+          rider_id: rider.id,
+          zone: rider.zone,
+          daily_payout_inr: premiumData?.suggested_daily_payout_inr || 800
+        })
+      });
+      const data = await res.json();
+      setClaimStatus(data);
+    } catch(e) { console.error(e); }
+    setLoading('');
+  };
+
+  const handleFraudCheck = async () => {
+    setLoading('fraud');
+    try {
+      const res = await fetch('http://localhost:8000/api/fraud/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rider_id: rider.id,
+          claim_location_lat: 12.9698, // Bangalore coords mockup
+          claim_location_lng: 77.7499,
+          disruption_zone: rider.zone
+        })
+      });
+      const data = await res.json();
+      setFraudData(data);
+    } catch(e) { console.error(e); }
+    setLoading('');
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="app-container">
+      <header className="header">
+        <div className="logo-section">
+          <Shield size={32} color="#4facfe" />
+          <h1 className="logo-text">GigGuard AI</h1>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+        <div className="rider-badge">
+          <Activity size={16} color="#00f2fe" />
+          <span>Rider Active: {rider.id} | {rider.zone}</span>
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      </header>
 
-      <div className="ticks"></div>
+      <div className="grid">
+        {/* Onboarding & Risk AI */}
+        <div className="glass-card">
+          <div className="card-header">
+            <ShieldAlert />
+            <h2>AI Policy Engine</h2>
+          </div>
+          <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem'}}>Parametric pricing calculated dynamically based on historical API data.</p>
+          
+          <div className="control-group">
+             <label>Operating Zone</label>
+             <select className="control-input" value={rider.zone} onChange={e => setRider({...rider, zone: e.target.value})}>
+               <option value="Whitefield">Whitefield (High Flood Risk)</option>
+               <option value="Indiranagar">Indiranagar (Moderate)</option>
+               <option value="Delhi_NCR">Delhi NCR (Extreme Heat Risk)</option>
+             </select>
+          </div>
+          <div className="control-group">
+             <label>Vehicle Type</label>
+             <select className="control-input" value={rider.vehicle} onChange={e => setRider({...rider, vehicle: e.target.value})}>
+               <option value="Bike">Petrol Bike</option>
+               <option value="EV">Electric Vehicle (EV)</option>
+               <option value="Cycle">Bicycle</option>
+             </select>
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <button className="btn btn-primary" onClick={handleRiskProfile}>
+            {loading === 'premium' ? 'Calculating AI Model...' : 'Assess Risk & Price Premium'}
+          </button>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+          {premiumData && (
+            <div className="result-box">
+              <div className="metric-row">
+                <span className="metric-label">Weekly Premium</span>
+                <span className="metric-value" style={{color: '#4facfe'}}>₹{premiumData.weekly_premium_inr} / wk</span>
+              </div>
+              <div className="metric-row">
+                <span className="metric-label">Max Daily Payout</span>
+                <span className="metric-value">₹{premiumData.suggested_daily_payout_inr}</span>
+              </div>
+              <div className="metric-row">
+                <span className="metric-label">AI Confidence</span>
+                <span className="metric-value">{(premiumData.ai_confidence * 100).toFixed(1)}%</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Parametric Trigger Engine */}
+        <div className="glass-card">
+          <div className="card-header">
+            <CloudLightning color="#ff4b2b" />
+            <h2>Weather Disruptions</h2>
+          </div>
+          <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem'}}>Simulate an external real-time webhook (e.g., OpenWeather) hitting the parametric trigger API.</p>
+
+          <button className="btn btn-danger" onClick={simulateTrigger} disabled={!premiumData}>
+             {loading === 'trigger' ? 'Polling Weather APIs...' : 'Simulate Live Weather Event'}
+          </button>
+
+          {claimStatus && (
+            <div className={`result-box ${claimStatus.status === 'TRIGGERED' ? 'danger' : ''}`}>
+              <div className="metric-row">
+                <span className="metric-label">Condition Status</span>
+                <span className="metric-value">{claimStatus.status}</span>
+              </div>
+              <div className="metric-row">
+                <span className="metric-label">Disruption</span>
+                <span className="metric-value">{claimStatus.reason}</span>
+              </div>
+              {claimStatus.status === 'TRIGGERED' && (
+                <div className="metric-row" style={{marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '0.5rem'}}>
+                  <span className="metric-label" style={{color: '#ff4b2b', fontWeight: 'bold'}}>Automated Payout</span>
+                  <span className="metric-value" style={{color: '#ff4b2b'}}>₹{claimStatus.payout_amount}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Fraud Detection */}
+        <div className="glass-card">
+          <div className="card-header">
+            <CheckCircle color="#00b09b" />
+            <h2>Fraud Validation</h2>
+          </div>
+          <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem'}}>Ensure the payout is legitimate: block duplicate requests and validate GPS location.</p>
+
+          <button className="btn btn-warning" onClick={handleFraudCheck} disabled={!claimStatus || claimStatus.status !== 'TRIGGERED'}>
+            {loading === 'fraud' ? 'Validating Telemetry...' : 'Run Fraud Detection Algorithm'}
+          </button>
+
+          {fraudData && (
+            <div className={`result-box ${fraudData.fraud_detected ? 'danger' : 'success'}`}>
+               <div className="metric-row">
+                <span className="metric-label">Claim Status</span>
+                <span className="metric-value">
+                  {fraudData.fraud_detected ? 'REJECTED (FRAUD)' : 'APPROVED'}
+                </span>
+              </div>
+              <div className="metric-row">
+                <span className="metric-label">System Note</span>
+                <span className="metric-value">{fraudData.reason}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Analytics Dashboard */}
+        <div className="glass-card" style={{gridColumn: '1 / -1'}}>
+          <div className="card-header">
+            <Activity color="#f6d365" />
+            <h2>Platform Analytics (Admin)</h2>
+          </div>
+          <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem'}}>Real-time metrics for Guidewire core systems.</p>
+          <div className="grid">
+             <div className="result-box">
+                <div className="metric-row"><span className="metric-label">Active Policies</span><span className="metric-value" style={{color: '#4facfe'}}>12,450</span></div>
+             </div>
+             <div className="result-box">
+                <div className="metric-row"><span className="metric-label">Total Premiums (Wk)</span><span className="metric-value" style={{color: '#00b09b'}}>₹4.2M</span></div>
+             </div>
+             <div className="result-box">
+                <div className="metric-row"><span className="metric-label">Recent Triggers</span><span className="metric-value" style={{color: '#ff4b2b'}}>142</span></div>
+             </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   )
 }
 
-export default App
+export default App;
