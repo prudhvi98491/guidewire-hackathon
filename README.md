@@ -55,38 +55,21 @@ graph TD
 
 ---
 
-## 🛠️ Setup & Local Run Instructions
+## 🔄 Detailed Process Workflow
 
-To run this platform locally, you will need two terminal windows:
+How does GigGuard solve the problem? Traditional insurance relies on damage assessment, paperwork, and lengthy approval cycles—which do not work for gig workers who rely on daily wages. We solve this using a **Parametric Architecture**, meaning payouts are triggered automatically by live **data parameters** rather than manual damage claims.
 
-### 1. Run the Backend API (Python)
-Navigate to the `backend` directory from the root of the project:
-```bash
-cd backend
-python -m venv venv
+### Example Workflow: A Monsoon Flood in Bangalore
+Here is how the platform operates end-to-end for a Zomato delivery partner in Whitefield.
 
-# On Windows:
-.\venv\Scripts\activate
-# On Mac/Linux:
-source venv/bin/activate
+#### State 1: Onboarding & Risk Profiling
+* **What happens:** The rider logs into their delivery app. The platform securely generates a GigGuard policy for the current week.
+* **Our Process:** The AI Risk Engine analyzes historical data. Because the rider operates an **Electric Vehicle (EV)** in the **Whitefield** zone (a known high flood-risk area), the predictive model dynamically calculates a weekly premium of ₹42.00 to cover up to ₹960/day in lost income. The premium is deducted seamlessly from their weekly payout settlement.
 
-# Install dependencies:
-pip install fastapi uvicorn pydantic scikit-learn
+#### State 2: Active Monitoring (The Disruption Event)
+* **What happens:** A sudden, severe monsoon downpour begins, causing massive waterlogging. Safe movement becomes impossible and the zone is temporarily blocked for deliveries.
+* **Our Process:** GigGuard's backend continuously polls an external weather webhook. The telemetry registers rainfall exceeding our predefined threshold of **15 mm/hr**. A Parametric Smart Contract trigger fires instantly. The rider does not need to submit any photos or paperwork to prove they lost work.
 
-# Run the FastAPI server:
-uvicorn main:app --reload --port 8000
-```
-*The backend API console (Swagger UI) will be available at [http://localhost:8000/docs](http://localhost:8000/docs)*
-
-### 2. Run the Frontend UI (React)
-Navigate to the `frontend` directory from the root of the project:
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start the dev server
-npm run dev
-```
-*The GigGuard platform will be accessible at [http://localhost:5173](http://localhost:5173)*
+#### State 3: Fraud Validation & Instant Payout
+* **What happens:** The system verifies the disruption and transfers funds to the rider, protecting their daily wage drop.
+* **Our Process:** Before initiating the Guidewire core payment module, the GigGuard Fraud Validation system performs a rapid integrity check. It queries the rider's active GPS coordinates, verifies they were successfully logged into the platform within the affected geography, and ensures no duplicate policy was triggered. Once green-lit, the API instantly executes a bank/UPI transfer.
