@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GigGuard AI</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; background: #f4f7fb; color: #1f2937; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 30px 20px; }
+    h1 { text-align: center; color: #0a2c4c; margin-bottom: 5px; }
+    .subtitle { text-align: center; margin-bottom: 30px; color: #4b5563; }
+    .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 14px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08); }
+    .card h2 { margin-top: 0; color: #0a2c4c; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 15px; }
+    input, select { padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; width: 100%; box-sizing: border-box; }
+    button { background: #0a2c4c; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; margin-top: 8px; margin-right: 8px; }
+    button:hover { background: #12426f; }
+    .button-group { display: flex; flex-wrap: wrap; gap: 10px; }
+    .result { margin-top: 15px; background: #eef6ff; padding: 15px; border-radius: 10px; }
+    .status-box { background: #fff8e1; padding: 15px; border-radius: 10px; font-weight: bold; color: #7c5a00; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>GigGuard AI</h1>
+    <p class="subtitle">Parametric Income Protection for India’s Gig Workers</p>
+
+    <div class="card">
+      <h2>1. Registration Process</h2>
+      <div class="grid">
+        <input id="name" placeholder="Name">
+        <input id="phone" placeholder="Phone">
+        <input id="platform" placeholder="Platform (Zepto/Blinkit)">
+        <select id="vehicle_type">
+          <option value="bike">Bike</option>
+          <option value="scooter">Scooter</option>
+          <option value="cycle">Cycle</option>
+        </select>
+        <select id="zone">
+          <option value="urban zone">Urban Zone</option>
+          <option value="flood zone">Flood Zone</option>
+          <option value="waterlogging zone">Waterlogging Zone</option>
+          <option value="heat zone">Heat Zone</option>
+          <option value="high risk">High Risk</option>
+        </select>
+        <input id="weekly_income" type="number" value="5000" placeholder="Weekly Income">
+      </div>
+      <button onclick="registerUser()">Register Rider</button>
+    </div>
+
+    <div class="card">
+      <h2>2. Dynamic Premium Calculation</h2>
+      <button onclick="calculatePremium()">Calculate AI Premium</button>
+      <div id="premiumResult"></div>
+    </div>
+
+    <div class="card">
+      <h2>3. Insurance Policy Management</h2>
+      <button onclick="createPolicy()">Create Policy</button>
+      <div id="policyResult"></div>
+    </div>
+
+    <div class="card">
+      <h2>4. Automated Triggers (3–5 Required)</h2>
+      <div class="button-group">
+        <button onclick="triggerEvent('rain', 20)">Simulate Heavy Rain</button>
+        <button onclick="triggerEvent('heat', 45)">Simulate Extreme Heat</button>
+        <button onclick="triggerEvent('aqi', 350)">Simulate Severe AQI</button>
+        <button onclick="triggerEvent('platform_shutdown', 1)">Simulate Platform Shutdown</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>5. Claims Management + Zero-Touch Claim Process</h2>
+      <div id="claimResult">No claim yet. Trigger an event to simulate zero-touch claims.</div>
+    </div>
+
+    <div class="status-box" id="statusBox">
+      <strong>Status:</strong> Ready
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+    let currentUser = null;
+    let currentPremium = null;
+
+    function getFormData() {
+      return {
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        platform: document.getElementById("platform").value,
+        vehicle_type: document.getElementById("vehicle_type").value,
+        zone: document.getElementById("zone").value,
+        weekly_income: Number(document.getElementById("weekly_income").value)
+      };
+    }
+
+    function setStatus(msg) {
+      document.getElementById("statusBox").innerHTML = "<strong>Status:</strong> " + msg;
+    }
+
+    async function registerUser() {
+      const form = getFormData();
+      const res = await fetch(`${API_BASE}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+      const data = await res.json();
+      currentUser = data.user;
+      setStatus(data.message);
+    }
+
+    async function calculatePremium() {
+      const form = getFormData();
+      const res = await fetch(`${API_BASE}/calculate-premium`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+      const data = await res.json();
+      currentPremium = data;
+
+      document.getElementById("premiumResult").innerHTML = `
+        <div class="result">
+          <p><strong>Suggested Plan:</strong> ${data.suggested_plan}</p>
+          <p><strong>Weekly Premium:</strong> ₹${data.weekly_premium}</p>
+          <p><strong>Daily Payout:</strong> ₹${data.daily_payout}</p>
+          <p><strong>Risk Score:</strong> ${data.risk_score}</p>
+        </div>
+      `;
+      setStatus("AI premium calculated successfully");
+    }
+
+    async function createPolicy() {
+      if (!currentUser || !currentPremium) {
+        setStatus("Please register and calculate premium first");
+        return;
+      }
+
+      const res = await fetch(`${API_BASE}/create-policy`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: currentUser.id,
+          plan: currentPremium.suggested_plan,
+          weekly_premium: currentPremium.weekly_premium,
+          daily_payout: currentPremium.daily_payout
+        })
+      });
+
+      const data = await res.json();
+
+      document.getElementById("policyResult").innerHTML = `
+        <div class="result">
+          <p><strong>Plan:</strong> ${data.policy.plan}</p>
+          <p><strong>Status:</strong> ${data.policy.status}</p>
+          <p><strong>Weekly Premium:</strong> ₹${data.policy.weekly_premium}</p>
+          <p><strong>Daily Payout:</strong> ₹${data.policy.daily_payout}</p>
+          <p><strong>Covered Triggers:</strong> ${data.policy.covered_triggers.join(", ")}</p>
+        </div>
+      `;
+
+      setStatus(data.message);
+    }
+
+    async function triggerEvent(triggerType, value) {
+      if (!currentUser) {
+        setStatus("Please register first");
+        return;
+      }
+
+      const res = await fetch(`${API_BASE}/trigger-event`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: currentUser.id,
+          trigger_type: triggerType,
+          value: value
+        })
+      });
+
+      const data = await res.json();
+      setStatus(data.message);
+
+      if (data.claim) {
+        document.getElementById("claimResult").innerHTML = `
+          <div class="result">
+            <p><strong>Claim ID:</strong> ${data.claim.claim_id}</p>
+            <p><strong>Trigger Type:</strong> ${data.claim.trigger_type}</p>
+            <p><strong>Status:</strong> ${data.claim.status}</p>
+            <p><strong>Validation:</strong> ${data.claim.validation_status}</p>
+            <p><strong>Payout Amount:</strong> ₹${data.claim.payout_amount}</p>
+            <p><strong>Payout Status:</strong> ${data.claim.payout_status}</p>
+          </div>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>
