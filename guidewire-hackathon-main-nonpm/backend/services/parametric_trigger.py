@@ -8,11 +8,13 @@ def evaluate_trigger(trigger_type: str, value: float):
             "threshold": "Rainfall > 15 mm/hr"
         }
 
-    elif trigger_type == "heat":
+    elif trigger_type == "heat_stress":
+        # Simulate Heat Index / Wet Bulb calculation: value here is Heat Index in Celsius
+        # At high humidity, 35C is as dangerous as 45C in dry heat.
         return {
-            "triggered": value > 42,
-            "message": "Extreme Heat Trigger Evaluated",
-            "threshold": "Temperature > 42°C"
+            "triggered": value > 38,
+            "message": "Scientific Heat-Humid Stress Trigger breached (HHI/Wet-Bulb Equivalent)",
+            "threshold": "HI > 38°C (Critical for Safe Outdoor Physical Work)"
         }
 
     elif trigger_type == "aqi":
@@ -27,6 +29,20 @@ def evaluate_trigger(trigger_type: str, value: float):
             "triggered": value == 1,
             "message": "Platform / Zone Shutdown Trigger Evaluated",
             "threshold": "Platform outage or zone shutdown"
+        }
+
+    elif trigger_type == "internet_outage":
+        return {
+            "triggered": value == 1,
+            "message": "Regional Internet Outage Detected",
+            "threshold": "Network disruption in delivery zone"
+        }
+
+    elif trigger_type == "curfew":
+        return {
+            "triggered": value == 1,
+            "message": "Local Unplanned Curfew / Zone Access Restriction",
+            "threshold": "Sudden market closure or access denial"
         }
 
     return {
