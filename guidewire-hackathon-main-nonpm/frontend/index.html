@@ -41,8 +41,9 @@
 
     .btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; font-size: 0.85rem; }
     .btn:hover { background: var(--accent); }
-    .btn-hazard { background: var(--hazard); }
+    .btn-secondary { background: #f1f5f9; color: var(--primary); }
     .btn-solidarity { background: var(--solidarity); }
+    .btn-danger-outline { border: 2px solid var(--danger); background: transparent; color: var(--danger); font-size: 0.75rem; }
 
     .result-panel { background: #f8fafc; border: 1px solid #e2e8f0; padding: 25px; border-radius: 4px; margin-top: 20px; }
     .metric { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #e2e8f0; }
@@ -50,7 +51,7 @@
     .metric-val { font-weight: 800; color: var(--primary); }
     .payout-hero { font-size: 2rem; font-weight: 950; color: var(--success); text-align: center; margin: 15px 0; }
 
-    .trigger-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .trigger-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
     .trigger-btn { flex: 1; min-width: 150px; background: white; border: 2px solid #e2e8f0; padding: 15px; border-radius: 4px; cursor: pointer; text-align: left; transition: all 0.2s; }
     .trigger-btn:hover { border-color: var(--accent); }
     .trigger-btn h4 { margin: 0; font-size: 0.9rem; font-weight: 800; }
@@ -63,107 +64,94 @@
     .status-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 10px 40px; display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); z-index: 1000; }
     .active-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px var(--success); }
 
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 40px; border-radius: 4px; max-width: 500px; width: 100%; text-align: center; }
+
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .animate { animation: fadeIn 0.4s ease-out forwards; }
   </style>
 </head>
 <body>
+  <!-- Impact Modal -->
+  <div class="modal" id="impactModal">
+    <div class="modal-content animate">
+      <h2 style="color: var(--solidarity); margin-top: 0;">🌍 Community Resilience Report</h2>
+      <p style="color: var(--text-muted);">The **Kavach AI Solidarity Pool** is funded by un-used weekly premiums to support catastrophic regional disasters.</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
+        <div style="background: #f1f5f9; padding: 15px; border-radius: 4px;"><strong>₹18.4L</strong><br><small>Pooled Fund</small></div>
+        <div style="background: #f1f5f9; padding: 15px; border-radius: 4px;"><strong>1,420</strong><br><small>Riders Supported</small></div>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">Last Activated: **Bangalore Monsoon 2024**. Boosted parametric payouts by 30% for affected Whitefield delivery partners.</p>
+      <button class="btn" style="width: 100%;" onclick="closeModal()">Close Impact View</button>
+    </div>
+  </div>
+
   <div class="container">
     <header>
       <div>
         <h1>KAVACH AI</h1>
-        <p>Climate-Adaptive Wage Protocol (CAWP) for India’s Gig Economy</p>
+        <p>Climate-Adaptive Wage Protocol (CAWP) — Supporting Gig Resilience</p>
       </div>
-      <div class="originality-tag">Un-Prompted Original Architecture</div>
+      <div class="originality-tag">Opinionated Architecture v2.0</div>
     </header>
 
     <div class="protocol-grid">
       <main>
-        <!-- 1. Risk Profiling -->
+        <!-- STEP 1 -->
         <div class="card animate">
-          <div class="card-header">
-            <h2 class="card-title">1. Vulnerability Assessment <span class="opinion-badge">Hyper-Local Logic</span></h2>
-          </div>
+          <div class="card-header"><h2 class="card-title">Step 1: Anchor Rider Entity</h2></div>
           <div class="input-grid">
-            <div class="input-group">
-              <label>Rider Entity</label>
-              <input id="name" placeholder="e.g. Anand Sharma">
-            </div>
-            <div class="input-group">
-              <label>Service Vehicle</label>
-              <select id="vehicle_type">
-                <option value="bike">Internal Combustion (Petrol)</option>
-                <option value="scooter">Electric Vehicle (Battery)</option>
-                <option value="cycle">Manual/Pedestrian</option>
-              </select>
-            </div>
-            <div class="input-group">
-              <label>Climate Exposure Zone</label>
+            <div class="input-group"><label>Rider Name</label><input id="name" placeholder="e.g. Rahul Kumar"></div>
+            <div class="input-group"><label>Exposure Zone</label>
               <select id="zone">
-                <option value="high risk">Whitefield (Extreme Waterlogging Risk)</option>
-                <option value="flood zone">North East (Monsoon Surge Risk)</option>
-                <option value="heat zone">Delhi/Noida (Wet-Bulb Stress Zone)</option>
-                <option value="urban zone">Urban Zone (Moderate Exposure)</option>
+                <option value="high risk">Whitefield (Heavy Waterlogging)</option>
+                <option value="flood zone">Majestic (Flash Flood Risk)</option>
+                <option value="heat zone">Delhi/Noida (Wet-Bulb Zone)</option>
               </select>
             </div>
-            <div class="input-group">
-              <label>Weekly Wage Target (₹)</label>
-              <input id="weekly_income" type="number" value="6000">
+            <div class="input-group"><label>Vehicle Class</label>
+              <select id="vehicle_type">
+                <option value="bike">Internal Combustion (Fuel)</option>
+                <option value="scooter">Electric Scooter (Battery)</option>
+              </select>
             </div>
+            <div class="input-group"><label>Weekly Target (₹)</label><input id="weekly_income" type="number" value="6000"></div>
           </div>
-          <button class="btn" onclick="registerUser()">⚓ Anchor Protocol Profile</button>
+          <button class="btn" onclick="registerUser()" id="regBtn">⚓ Anchor Profile</button>
         </div>
 
-        <!-- 2. Scientific Pricing -->
+        <!-- STEP 2 -->
         <div class="card animate" style="animation-delay: 0.1s">
-          <div class="card-header">
-            <h2 class="card-title">2. Parametric Risk-Weighting</h2>
-          </div>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">Adjusting premiums based on the **Heat Stress Index (HI)** and historical zone resilience data. High vulnerability riders receive subsidy-adjusted coverage.</p>
-          <button class="btn btn-secondary" onclick="calculatePremium()" id="calcBtn">📐 Generate Risk-Weighting</button>
+          <div class="card-header"><h2 class="card-title">Step 2: Generate AI Risk-Weighting</h2></div>
+          <button class="btn btn-secondary" onclick="calculatePremium()" id="calcBtn">📐 Evaluate Risk Pricing</button>
           <div id="premiumResult"></div>
         </div>
 
-        <!-- 3. Protocol Enforcement -->
+        <!-- STEP 3 -->
         <div class="card animate" style="animation-delay: 0.2s">
-          <div class="card-header">
-            <h2 class="card-title">3. Protocol Interaction <span class="opinion-badge">Zero-Paperwork</span></h2>
-          </div>
+          <div class="card-header"><h2 class="card-title">Step 3: Protocol Enrollment <span class="opinion-badge">MANDATORY</span></h2></div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Activate the **Climate Smart Policy** to start monitoring environmental triggers.</p>
+          <button class="btn btn-highlight" style="background: var(--accent);" id="enrollBtn" onclick="createPolicy()">📜 ACTIVATE KAVACH PROTOCOL</button>
+          <div id="policyResult"></div>
+        </div>
+
+        <!-- STEP 4 -->
+        <div class="card animate" style="animation-delay: 0.3s">
+          <div class="card-header"><h2 class="card-title">Step 4: Simulate Climate Breach</h2></div>
+          <div id="triggerWarning" style="color: var(--danger); font-size: 0.75rem; margin-bottom: 10px; font-weight: 700; display: block;">Wait for Policy Activation...</div>
           <div class="trigger-strip">
-            <div class="trigger-btn" onclick="triggerEvent('rain', 22)">
-              <h4>🌧️ Monsoon Breach</h4>
-              <p>Rainfall > 20mm/hr detected by API</p>
-            </div>
-            <div class="trigger-btn" onclick="triggerEvent('heat_stress', 39)">
-              <h4>🥵 Heat Stress (HHI)</h4>
-              <p>Wet-Bulb Temp > 38°C (Dangerous)</p>
-            </div>
-            <div class="trigger-btn" onclick="triggerEvent('aqi', 320)">
-              <h4>😷 AQI Toxicity</h4>
-              <p>Pollution Index > 300 (Severe)</p>
-            </div>
-            <div class="trigger-btn" onclick="triggerEvent('platform_shutdown', 1)">
-              <h4>🔌 Network Halt</h4>
-              <p>Admin Zone Shutdown Simulation</p>
-            </div>
-            <div class="trigger-btn" onclick="triggerEvent('internet_outage', 1)">
-              <h4>🌐 Infra Outage</h4>
-              <p>Regional Net Disruption Protocol</p>
-            </div>
-             <div class="trigger-btn" style="border-color: var(--danger);" onclick="triggerEvent('curfew', 1)">
-              <h4>🚧 Flash Curfew</h4>
-              <p>Unplanned Zone Blockade</p>
-            </div>
+            <div class="trigger-btn" onclick="triggerEvent('rain', 25)"><h4>🌧️ Rain Breach</h4><p>Heavy Monsoon Cycle</p></div>
+            <div class="trigger-btn" onclick="triggerEvent('heat_stress', 42)"><h4>🥵 Heat Stress</h4><p>HI > 38°C (Wet-Bulb)</p></div>
+            <div class="trigger-btn" onclick="triggerEvent('aqi', 350)"><h4>😷 Toxicity Index</h4><p>AQI > 300 (Severe)</p></div>
+            <div class="trigger-btn" onclick="triggerEvent('platform_shutdown', 1)"><h4>🔌 Platform Halt</h4><p>Admin Shutdown</p></div>
           </div>
         </div>
 
-         <!-- 4. Zero-Touch Payouts -->
-         <div class="card animate" style="animation-delay: 0.3s">
-          <div class="card-header">
-            <h2 class="card-title">4. Automatic Wage Preservation</h2>
-          </div>
-          <div id="claimResult" style="text-align: center; border: 2px dashed #e2e8f0; padding: 40px;">
-            Waiting for Climate Parameter Breach...
+         <!-- STEP 5 -->
+         <div class="card animate" style="animation-delay: 0.4s">
+          <div class="card-header"><h2 class="card-title">Step 5: Zero-Touch Wage Preservation</h2></div>
+          <div id="claimResult" style="text-align: center; border: 2px dashed #e2e8f0; padding: 40px; color: var(--text-muted);">
+            System polling Climate API. No breach detected yet.
           </div>
         </div>
       </main>
@@ -172,27 +160,21 @@
         <div class="sidebar-card">
           <label style="color: #94a3b8;">Solidarity Pool Balance</label>
           <div class="pool-balance">₹18,42,450</div>
-          <p class="pool-desc">A portion of every un-used premium is pooled to support catastrophic zone-level disruptions (e.g. Chennai 2023 Floods). **Kavach AI Original Concept.**</p>
-          <button class="btn btn-solidarity" style="width: 100%; margin-top: 15px; font-size: 0.7rem;">View Community Impact</button>
+          <button class="btn btn-solidarity" style="width: 100%; margin-top: 15px; font-size: 0.75rem;" onclick="openModal()">📊 VIEW COMMUNITY IMPACT</button>
         </div>
 
-        <div class="sidebar-card" style="background: #ffffff; color: var(--primary); border: 2px solid var(--primary);">
-          <label style="color: var(--text-muted);">Protocol Status</label>
-          <div style="font-size: 1.2rem; font-weight: 800; margin: 10px 0;">🛡️ Active Monitoring</div>
-          <div style="font-size: 0.75rem; color: var(--text-muted);">Connected to Guidewire API + Real-time Webhooks</div>
-        </div>
-
-        <div class="sidebar-card" style="background: #f8fafc; color: var(--primary); border: 1px solid #e2e8f0;">
-          <label style="color: var(--text-muted);">Scientific Note</label>
-          <p style="font-size: 0.75rem; color: var(--text-muted);">**HHI Protocol:** Uses Heat Index formula (Temperature + Humidity) to determine "felt heat" instead of simple raw temp—this prevents false-negatives in humid coastal India.</p>
+        <div class="sidebar-card" style="background: white; color: var(--primary); border: 2px solid var(--primary);">
+          <label>Protocol Intelligence</label>
+          <div style="font-size: 1.1rem; font-weight: 800; margin: 10px 0;">🛡️ Active Monitoring</div>
+          <p style="font-size: 0.7rem; color: var(--text-muted);">Integrating **Guidewire ClaimCenter Webhooks** for sub-second payout authorization.</p>
         </div>
       </aside>
     </div>
 
     <div class="status-bar">
-      <div><span class="active-dot"></span> LIVE ENGINE: kavach-ai-protocol-v2.0</div>
-      <div id="statusBarText">PROTOCOL READY FOR ANCHORING</div>
-      <div>SESSION: 2026-GW-HACK-012</div>
+      <div><span class="active-dot"></span> LIVE ENGINE: kavach-ai-v2.0</div>
+      <div id="statusBarText">WAITING FOR ANCHOR...</div>
+      <div>SESSION: GW-HACK-PROTO-012</div>
     </div>
   </div>
 
@@ -201,82 +183,66 @@
     let currentUser = null;
     let currentPremium = null;
 
-    function setStatus(msg) {
-      document.getElementById("statusBarText").innerText = msg.toUpperCase();
-    }
+    function setStatus(msg) { document.getElementById("statusBarText").innerText = msg.toUpperCase(); }
+    function openModal() { document.getElementById("impactModal").style.display = "flex"; }
+    function closeModal() { document.getElementById("impactModal").style.display = "none"; }
 
     async function registerUser() {
-      const payload = {
-        name: document.getElementById("name").value,
-        phone: "91-PROTO-01",
-        platform: "Multi-Platform (Agnostic)",
-        vehicle_type: document.getElementById("vehicle_type").value,
-        zone: document.getElementById("zone").value,
-        weekly_income: Number(document.getElementById("weekly_income").value)
-      };
-      
-      const res = await fetch(`${API_BASE}/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+      const payload = { name: document.getElementById("name").value, phone: "91-PROTO-01", platform: "Zomato/Zepto", 
+                        vehicle_type: document.getElementById("vehicle_type").value, 
+                        zone: document.getElementById("zone").value, weekly_income: Number(document.getElementById("weekly_income").value) };
+      const res = await fetch(`${API_BASE}/register`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
       currentUser = data.user;
-      setStatus("Protocol Profile Anchored successfully");
+      setStatus("Rider Entity Anchored");
+      document.getElementById("regBtn").innerText = "✔ Profile Anchored";
     }
 
     async function calculatePremium() {
-      const payload = {
-        name: document.getElementById("name").value,
-        phone: "91-PROTO-01",
-        platform: "Multi-Platform (Agnostic)",
-        vehicle_type: document.getElementById("vehicle_type").value,
-        zone: document.getElementById("zone").value,
-        weekly_income: Number(document.getElementById("weekly_income").value)
-      };
-      const res = await fetch(`${API_BASE}/calculate-premium`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
+      const payload = { ...currentUser, zone: document.getElementById("zone").value, vehicle_type: document.getElementById("vehicle_type").value, 
+                        weekly_income: Number(document.getElementById("weekly_income").value) };
+      const res = await fetch(`${API_BASE}/calculate-premium`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       currentPremium = await res.json();
-
       document.getElementById("premiumResult").innerHTML = `
         <div class="result-panel animate">
-          <div class="metric"><span>Vulnerability Score</span><span class="metric-val">${currentPremium.risk_score} pts</span></div>
-          <div class="metric"><span>Selected Coverage Tier</span><span class="metric-val" style="color: var(--accent)">${currentPremium.suggested_plan} Profile</span></div>
-          <div class="metric"><span>Dynamic Premium</span><span class="metric-val">₹${currentPremium.weekly_premium} / week</span></div>
-          <p class="payout-hero">₹${currentPremium.daily_payout} Guaranteed / Day</p>
+          <div class="metric"><span>Vulnerability Index</span><span class="metric-val">${currentPremium.risk_score} pts</span></div>
+          <div class="metric"><span>Weekly Premium</span><span class="metric-val">₹${currentPremium.weekly_premium}</span></div>
+          <p class="payout-hero">₹${currentPremium.daily_payout} Coverage / Day</p>
         </div>
       `;
-      setStatus("AI Weighted-Risk Evaluation Complete");
+      setStatus("Risk Analyzed");
+    }
+
+    async function createPolicy() {
+      if (!currentUser || !currentPremium) { setStatus("Error: Required Anchor/Risk Profile"); return; }
+      const res = await fetch(`${API_BASE}/create-policy`, { method: "POST", headers: { "Content-Type": "application/json" }, 
+                        body: JSON.stringify({ user_id: currentUser.id, plan: currentPremium.suggested_plan, 
+                                               weekly_premium: currentPremium.weekly_premium, daily_payout: currentPremium.daily_payout }) });
+      const data = await res.json();
+      document.getElementById("policyResult").innerHTML = `
+        <div class="result-panel animate" style="border-left: 6px solid var(--success);">
+          <p style="color: var(--success); font-weight: 800; margin: 0;">✔ PROTOCOL ACTIVE</p>
+          <p style="font-size: 0.75rem; margin: 5px 0;">Monitoring: [Rain, Heat_Stress, AQI, ShutDown]</p>
+        </div>
+      `;
+      document.getElementById("triggerWarning").style.display = "none";
+      setStatus("Policy Live");
     }
 
     async function triggerEvent(type, val) {
-      if (!currentUser) { setStatus("Error: No Active Profile Anchored"); return; }
-      
-      setStatus(`Probing API for ${type} parameters...`);
-      const res = await fetch(`${API_BASE}/trigger-event`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: currentUser.id, trigger_type: type, value: val })
-      });
+      if (!currentUser) { setStatus("Error: No Rider Profile"); return; }
+      const res = await fetch(`${API_BASE}/trigger-event`, { method: "POST", headers: { "Content-Type": "application/json" }, 
+                                body: JSON.stringify({ user_id: currentUser.id, trigger_type: type, value: val }) });
       const data = await res.json();
-      
       if (data.claim) {
         document.getElementById("claimResult").innerHTML = `
           <div class="result-panel animate" style="border: 2px solid var(--success); background: #f0fdf4;">
-            <div style="font-size: 0.7rem; font-weight: 800; color: var(--success); text-transform: uppercase;">Zero-Touch Settlement Initiated</div>
+            <div style="font-size: 0.75rem; font-weight: 800; color: var(--success); text-transform: uppercase;">Zero-Touch Settlement Success</div>
             <div class="payout-hero" style="font-size: 2.5rem;">₹${data.claim.payout_amount} Disbursed</div>
-            <div class="metric"><span>Trigger Source</span><span class="metric-val">${data.trigger_result.message}</span></div>
-            <div class="metric"><span>Parametric Validation</span><span class="metric-val" style="color: var(--success);">SUCCESS (FRAUD-CLEARED)</span></div>
-            <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 15px; text-align: center;">Payout authenticated via Guidewire Core Systems. Bank/UPI transfer: SUCCESS.</div>
-          </div>
-        `;
-        setStatus("Climate Stress Payout Completed");
-      } else {
-        setStatus(data.message);
-      }
+            <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center;">Payout authenticated via Guidewire API Simulation.</p>
+          </div>`;
+        setStatus("Payout Completed");
+      } else { setStatus(data.message); }
     }
   </script>
 </body>
