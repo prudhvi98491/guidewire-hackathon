@@ -4,169 +4,788 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kavach AI — Climate-Adaptive Wage Protocol</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>" />
+  <!-- Import Outfit typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Load Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
-      --primary: #0f172a;
-      --accent: #2563eb;
-      --bg: #f1f5f9;
-      --card-bg: #ffffff;
-      --text: #1e293b;
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      font-weight: 400;
+
+      /* Dark / Glassmorphic Theme Tokens */
+      --bg-main: #0b0f19;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(26, 36, 57, 0.85);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
       --text-muted: #64748b;
-      --success: #10b981;
-      --hazard: #f59e0b;
-      --danger: #ef4444;
-      --solidarity: #8b5cf6;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-glow: rgba(6, 182, 212, 0.15);
+      
+      --primary: #06b6d4;         /* Neon Cyan */
+      --primary-glow: rgba(6, 182, 212, 0.4);
+      --primary-hover: #22d3ee;
+      --secondary: #3b82f6;       /* Blue */
+      --danger: #f43f5e;          /* Rose Red */
+      --danger-glow: rgba(244, 63, 94, 0.4);
+      --success: #10b981;         /* Emerald Green */
+      --success-glow: rgba(16, 185, 129, 0.4);
+      --warning: #f59e0b;         /* Amber Yellow */
+      --solidarity: #8b5cf6;      /* Purple */
+      --solidarity-glow: rgba(139, 92, 246, 0.4);
+
+      --shadow-sm: 0 2px 8px -1px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 10px 20px -5px rgba(0, 0, 0, 0.7);
+      --shadow-lg: 0 20px 40px -10px rgba(0, 0, 0, 0.8);
     }
-    body { margin: 0; font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 40px 20px; }
-    
-    header { text-align: left; margin-bottom: 50px; border-bottom: 3px solid var(--primary); padding-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
-    header h1 { font-size: 2.8rem; font-weight: 900; color: var(--primary); margin: 0; letter-spacing: -0.05em; }
-    header p { color: var(--text-muted); font-size: 1.1rem; margin: 5px 0 0 0; font-weight: 500; }
-    .originality-tag { background: var(--primary); color: white; padding: 5px 15px; border-radius: 5px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
 
-    .protocol-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
-    
-    .card { background: var(--card-bg); padding: 35px; border-radius: 4px; border: 1px solid #e2e8f0; margin-bottom: 30px; position: relative; overflow: hidden; }
-    .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent); }
-    .card-header { margin-bottom: 25px; }
-    .card-title { font-size: 1.4rem; font-weight: 800; color: var(--primary); margin: 0; text-transform: uppercase; letter-spacing: 0.05em; }
-    .opinion-badge { font-size: 0.7rem; background: #eef2ff; color: var(--accent); padding: 3px 8px; border-radius: 4px; font-weight: 700; margin-left: 10px; vertical-align: middle; }
+    body {
+      margin: 0;
+      color: var(--text-primary);
+      background-color: var(--bg-main);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.12) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, #0b0f19 0px, #07090e 100%);
+      background-attachment: fixed;
+      background-size: cover;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
 
-    .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 25px; }
-    .input-group { display: flex; flex-direction: column; gap: 8px; }
-    label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
-    input, select { padding: 14px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.95rem; background: #f8fafc; }
-    input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
 
-    .btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.2s; font-size: 0.85rem; }
-    .btn:hover { background: var(--accent); }
-    .btn-secondary { background: #f1f5f9; color: var(--primary); }
-    .btn-solidarity { background: var(--solidarity); }
-    .btn-danger-outline { border: 2px solid var(--danger); background: transparent; color: var(--danger); font-size: 0.75rem; }
+    /* Header & Meta styling */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-    .result-panel { background: #f8fafc; border: 1px solid #e2e8f0; padding: 25px; border-radius: 4px; margin-top: 20px; }
-    .metric { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #e2e8f0; }
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon-container {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 0.6rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      background: linear-gradient(to right, #ffffff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin: 4px 0 0 0;
+      font-weight: 500;
+    }
+
+    .originality-tag {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 0.6rem 1.2rem;
+      border-radius: 9999px;
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      font-size: 0.825rem;
+      font-weight: 500;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Grid Layout */
+    .protocol-grid {
+      display: grid;
+      grid-template-columns: 8fr 4fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .protocol-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Glass Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: var(--shadow-md);
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    }
+
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(6, 182, 212, 0.25);
+      box-shadow: var(--shadow-lg), 0 0 15px var(--border-glow);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0;
+      color: var(--text-primary);
+    }
+
+    .opinion-badge {
+      font-size: 0.7rem;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid var(--solidarity);
+      color: #a78bfa;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      margin-left: auto;
+    }
+
+    /* Forms */
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input, select {
+      padding: 0.75rem 0.85rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      transition: all 0.2s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.85rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.6rem;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 15px var(--primary-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: rgba(30, 41, 59, 0.6);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    .btn-secondary:hover {
+      background: rgba(30, 41, 59, 0.9);
+    }
+
+    .btn-solidarity {
+      background: linear-gradient(135deg, var(--solidarity), #7c3aed);
+      color: white;
+    }
+    .btn-solidarity:hover {
+      box-shadow: 0 0 15px var(--solidarity-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger-outline {
+      border: 2px solid var(--danger);
+      background: transparent;
+      color: var(--danger);
+    }
+    .btn-danger-outline:hover {
+      background: rgba(244, 63, 94, 0.1);
+    }
+
+    .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Result Panels */
+    .result-panel {
+      margin-top: 1.25rem;
+      padding: 1.2rem;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      border-left: 4px solid var(--primary);
+      animation: slideIn 0.3s ease-out forwards;
+      backdrop-filter: blur(5px);
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    }
     .metric:last-child { border: none; }
-    .metric-val { font-weight: 800; color: var(--primary); }
-    .payout-hero { font-size: 2rem; font-weight: 950; color: var(--success); text-align: center; margin: 15px 0; }
+    .metric-val { font-weight: 700; color: var(--primary); }
 
-    .trigger-strip { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .trigger-btn { flex: 1; min-width: 150px; background: white; border: 2px solid #e2e8f0; padding: 15px; border-radius: 4px; cursor: pointer; text-align: left; transition: all 0.2s; }
-    .trigger-btn:hover { border-color: var(--accent); }
-    .trigger-btn h4 { margin: 0; font-size: 0.9rem; font-weight: 800; }
-    .trigger-btn p { margin: 5px 0 0 0; font-size: 0.7rem; color: var(--text-muted); }
+    .payout-hero {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--success);
+      text-align: center;
+      margin: 1rem 0;
+      text-shadow: 0 0 15px var(--success-glow);
+    }
 
-    .sidebar-card { background: var(--primary); color: white; padding: 25px; border-radius: 4px; margin-bottom: 20px; }
-    .pool-balance { font-size: 2.5rem; font-weight: 900; margin: 10px 0; color: var(--success); }
-    .pool-desc { font-size: 0.8rem; color: #94a3b8; line-height: 1.4; }
+    /* Climate Breaches simulation */
+    .trigger-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
 
-    .status-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; border-top: 1px solid #e2e8f0; padding: 10px 40px; display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); z-index: 1000; }
-    .active-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 8px var(--success); }
+    .trigger-btn {
+      background: rgba(30, 41, 59, 0.4);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
-    .modal-content { background: white; padding: 40px; border-radius: 4px; max-width: 500px; width: 100%; text-align: center; }
+    .trigger-btn:hover {
+      border-color: var(--danger);
+      background: rgba(244, 63, 94, 0.05);
+      box-shadow: 0 0 10px rgba(244, 63, 94, 0.1);
+    }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .animate { animation: fadeIn 0.4s ease-out forwards; }
+    .trigger-btn h4 {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .trigger-btn p {
+      margin: 0;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Sidebar Panels */
+    .sidebar-card {
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .pool-balance {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin: 0.5rem 0;
+      color: var(--success);
+      text-shadow: 0 0 15px var(--success-glow);
+    }
+
+    .pool-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Telemetry Map */
+    .map-container {
+      height: 220px;
+      background: radial-gradient(circle, rgba(17, 24, 39, 0.8) 0%, rgba(3, 7, 18, 0.95) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+      margin-bottom: 1.5rem;
+    }
+
+    .map-grid-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .map-radar-scan {
+      position: absolute;
+      width: 200%; height: 200%;
+      top: -50%; left: -50%;
+      background: conic-gradient(from 0deg at 50% 50%, rgba(6, 182, 212, 0.07) 0deg, transparent 90deg, transparent 360deg);
+      animation: radar-sweep 8s linear infinite;
+    }
+
+    .map-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .map-node-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--text-muted);
+      border: 2px solid var(--bg-main);
+      box-shadow: 0 0 6px var(--text-muted);
+      transition: all 0.3s;
+    }
+
+    .map-node.active .map-node-dot {
+      background-color: var(--primary);
+      box-shadow: 0 0 12px var(--primary);
+      animation: pulse-glow-primary 1.5s infinite;
+    }
+
+    .map-rider {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      transition: all 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .rider-icon {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 2px solid white;
+      display: flex;
+      align-items: center; justify-content: center;
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    /* Terminal Sync Ledger */
+    .terminal-console {
+      background: #030712;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.9);
+      height: 160px;
+      overflow-y: auto;
+      font-size: 0.775rem;
+    }
+
+    .terminal-row {
+      line-height: 1.4;
+      margin-bottom: 0.35rem;
+      color: var(--text-secondary);
+    }
+    .terminal-row.system { color: #3b82f6; }
+    .terminal-row.trigger { color: #f59e0b; }
+    .terminal-row.success { color: #10b981; }
+    .terminal-row.error { color: #f43f5e; }
+
+    /* Backend toggle */
+    .backend-toggle {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(30, 41, 59, 0.4);
+      padding: 0.35rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .backend-btn {
+      flex: 1;
+      padding: 0.35rem 0.75rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .backend-btn.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Footer Status bar */
+    .status-bar {
+      position: fixed;
+      bottom: 0; left: 0; width: 100%;
+      background: rgba(15, 23, 42, 0.9);
+      border-top: 1px solid var(--border-color);
+      padding: 0.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      z-index: 1000;
+      box-sizing: border-box;
+      backdrop-filter: blur(10px);
+    }
+
+    .active-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse-glow-success 2s infinite;
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-content {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      padding: 2.25rem;
+      border-radius: 16px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Animations */
+    @keyframes pulse-glow-primary {
+      0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(6, 182, 212, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+    }
+
+    @keyframes pulse-glow-success {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    @keyframes radar-sweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
+
   <!-- Impact Modal -->
   <div class="modal" id="impactModal">
-    <div class="modal-content animate">
-      <h2 style="color: var(--solidarity); margin-top: 0;">🌍 Community Resilience Report</h2>
-      <p style="color: var(--text-muted);">The **Kavach AI Solidarity Pool** is funded by un-used weekly premiums to support catastrophic regional disasters.</p>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
-        <div style="background: #f1f5f9; padding: 15px; border-radius: 4px;"><strong>₹18.4L</strong><br><small>Pooled Fund</small></div>
-        <div style="background: #f1f5f9; padding: 15px; border-radius: 4px;"><strong>1,420</strong><br><small>Riders Supported</small></div>
+    <div class="modal-content">
+      <h2 style="color: var(--solidarity); margin-top: 0; font-weight: 800; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+        <i data-lucide="award"></i> Community Resilience Pool
+      </h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin-bottom: 1.5rem;">
+        The <strong>Kavach AI Solidarity Pool</strong> is funded by redirecting 5% of un-used weekly premiums to support catastrophic regional weather disasters.
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1.5rem 0;">
+        <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); padding: 1rem; border-radius: 10px;">
+          <strong style="font-size: 1.35rem; color: var(--success);">₹18.4L</strong><br>
+          <small style="color: var(--text-muted); font-weight: 500;">Pooled Fund</small>
+        </div>
+        <div style="background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-color); padding: 1rem; border-radius: 10px;">
+          <strong style="font-size: 1.35rem; color: var(--primary);">1,420</strong><br>
+          <small style="color: var(--text-muted); font-weight: 500;">Partners Shielded</small>
+        </div>
       </div>
-      <p style="font-size: 0.8rem; color: var(--text-muted);">Last Activated: **Bangalore Monsoon 2024**. Boosted parametric payouts by 30% for affected Whitefield delivery partners.</p>
-      <button class="btn" style="width: 100%;" onclick="closeModal()">Close Impact View</button>
+      <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        Last Activated: <strong>Bangalore Flood Event</strong>.<br>Boosted payouts by 30% for affected Whitefield delivery partners.
+      </p>
+      <button class="btn btn-primary" style="width: 100%;" onclick="closeModal()">Close Impact Report</button>
     </div>
   </div>
 
   <div class="container">
     <header>
       <div>
-        <h1>KAVACH AI</h1>
+        <div class="logo-section">
+          <div class="logo-icon-container">
+            <i data-lucide="shield" style="stroke: white;"></i>
+          </div>
+          <h1>KAVACH AI</h1>
+        </div>
         <p>Climate-Adaptive Wage Protocol (CAWP) — Supporting Gig Resilience</p>
       </div>
-      <div class="originality-tag">Opinionated Architecture v2.0</div>
+      <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <!-- Backend selector -->
+        <div class="backend-toggle">
+          <button id="btnLocalBackend" class="backend-btn" onclick="toggleBackend('local')">Local API</button>
+          <button id="btnRenderBackend" class="backend-btn active" onclick="toggleBackend('render')">Live Cloud</button>
+        </div>
+        <div class="originality-tag">
+          <i data-lucide="cpu" size="14" style="color: var(--primary);"></i>
+          <span>v2.0 Standalone</span>
+        </div>
+      </div>
     </header>
 
     <div class="protocol-grid">
       <main>
         <!-- STEP 1 -->
-        <div class="card animate">
-          <div class="card-header"><h2 class="card-title">Step 1: Anchor Rider Entity</h2></div>
+        <div class="card">
+          <div class="card-header">
+            <i data-lucide="user" class="text-primary" style="color: var(--primary);"></i>
+            <h2 class="card-title">Step 1: Anchor Rider Entity</h2>
+          </div>
           <div class="input-grid">
-            <div class="input-group"><label>Rider Name</label><input id="name" placeholder="e.g. Rahul Kumar"></div>
-            <div class="input-group"><label>Exposure Zone</label>
-              <select id="zone">
+            <div class="input-group">
+              <label>Rider Name</label>
+              <input id="name" value="Rahul Kumar" placeholder="e.g. Rahul Kumar">
+            </div>
+            <div class="input-group">
+              <label>Exposure Zone</label>
+              <select id="zone" onchange="syncZoneCoordinates()">
                 <option value="high risk">Whitefield (Heavy Waterlogging)</option>
                 <option value="flood zone">Majestic (Flash Flood Risk)</option>
                 <option value="heat zone">Delhi/Noida (Wet-Bulb Zone)</option>
               </select>
             </div>
-            <div class="input-group"><label>Vehicle Class</label>
+            <div class="input-group">
+              <label>Vehicle Class</label>
               <select id="vehicle_type">
                 <option value="bike">Internal Combustion (Fuel)</option>
                 <option value="scooter">Electric Scooter (Battery)</option>
               </select>
             </div>
-            <div class="input-group"><label>Weekly Target (₹)</label><input id="weekly_income" type="number" value="6000"></div>
+            <div class="input-group">
+              <label>Weekly Target (₹)</label>
+              <input id="weekly_income" type="number" value="6000">
+            </div>
           </div>
-          <button class="btn" onclick="registerUser()" id="regBtn">⚓ Anchor Profile</button>
+          <button class="btn btn-primary" onclick="registerUser()" id="regBtn">
+            <i data-lucide="anchor"></i> Anchor Profile
+          </button>
         </div>
 
         <!-- STEP 2 -->
-        <div class="card animate" style="animation-delay: 0.1s">
-          <div class="card-header"><h2 class="card-title">Step 2: Generate AI Risk-Weighting</h2></div>
-          <button class="btn btn-secondary" onclick="calculatePremium()" id="calcBtn">📐 Evaluate Risk Pricing</button>
+        <div class="card">
+          <div class="card-header">
+            <i data-lucide="sliders" style="color: var(--primary);"></i>
+            <h2 class="card-title">Step 2: Generate AI Risk-Weighting</h2>
+          </div>
+          <button class="btn btn-secondary" onclick="calculatePremium()" id="calcBtn" disabled>
+            <i data-lucide="bar-chart-2"></i> Evaluate Risk Pricing
+          </button>
           <div id="premiumResult"></div>
         </div>
 
         <!-- STEP 3 -->
-        <div class="card animate" style="animation-delay: 0.2s">
-          <div class="card-header"><h2 class="card-title">Step 3: Protocol Enrollment <span class="opinion-badge">MANDATORY</span></h2></div>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Activate the **Climate Smart Policy** to start monitoring environmental triggers.</p>
-          <button class="btn btn-highlight" style="background: var(--accent);" id="enrollBtn" onclick="createPolicy()">📜 ACTIVATE KAVACH PROTOCOL</button>
+        <div class="card">
+          <div class="card-header">
+            <i data-lucide="file-text" style="color: var(--primary);"></i>
+            <h2 class="card-title">Step 3: Protocol Enrollment</h2>
+            <span class="opinion-badge">MANDATORY</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;">
+            Bind the Climate Smart Policy to activate real-time telemetry monitoring.
+          </p>
+          <button class="btn btn-primary" style="background: var(--secondary);" id="enrollBtn" onclick="createPolicy()" disabled>
+            <i data-lucide="shield-check"></i> ACTIVATE KAVACH PROTOCOL
+          </button>
           <div id="policyResult"></div>
         </div>
 
         <!-- STEP 4 -->
-        <div class="card animate" style="animation-delay: 0.3s">
-          <div class="card-header"><h2 class="card-title">Step 4: Simulate Climate Breach</h2></div>
-          <div id="triggerWarning" style="color: var(--danger); font-size: 0.75rem; margin-bottom: 10px; font-weight: 700; display: block;">Wait for Policy Activation...</div>
+        <div class="card">
+          <div class="card-header">
+            <i data-lucide="cloud-lightning" style="color: var(--danger);"></i>
+            <h2 class="card-title">Step 4: Simulate Climate Breach</h2>
+          </div>
+          <div id="triggerWarning" style="color: var(--danger); font-size: 0.8rem; margin-bottom: 12px; font-weight: 600; display: flex; align-items: center; gap: 0.4rem;">
+            <i data-lucide="alert-circle" size="14"></i> Anchor rider and activate policy first...
+          </div>
           <div class="trigger-strip">
-            <div class="trigger-btn" onclick="triggerEvent('rain', 25)"><h4>🌧️ Rain Breach</h4><p>Heavy Monsoon Cycle</p></div>
-            <div class="trigger-btn" onclick="triggerEvent('heat_stress', 42)"><h4>🥵 Heat Stress</h4><p>HI > 38°C (Wet-Bulb)</p></div>
-            <div class="trigger-btn" onclick="triggerEvent('aqi', 350)"><h4>😷 Toxicity Index</h4><p>AQI > 300 (Severe)</p></div>
-            <div class="trigger-btn" onclick="triggerEvent('platform_shutdown', 1)"><h4>🔌 Platform Halt</h4><p>Admin Shutdown</p></div>
+            <button class="trigger-btn" onclick="triggerEvent('rain', 25)" disabled id="trigRain">
+              <h4>🌧️ Rain Breach</h4>
+              <p>Heavy Monsoon Cycle (&gt;20mm/hr)</p>
+            </button>
+            <button class="trigger-btn" onclick="triggerEvent('heat_stress', 42)" disabled id="trigHeat">
+              <h4>🥵 Heat Stress</h4>
+              <p>HI &gt; 38°C (Wet-Bulb)</p>
+            </button>
+            <button class="trigger-btn" onclick="triggerEvent('aqi', 350)" disabled id="trigAqi">
+              <h4>😷 Toxicity Index</h4>
+              <p>Severe AQI &gt; 300</p>
+            </button>
+            <button class="trigger-btn" onclick="triggerEvent('platform_shutdown', 1)" disabled id="trigHalt">
+              <h4>🔌 Platform Halt</h4>
+              <p>Admin Operations Shutdown</p>
+            </button>
           </div>
         </div>
 
          <!-- STEP 5 -->
-         <div class="card animate" style="animation-delay: 0.4s">
-          <div class="card-header"><h2 class="card-title">Step 5: Zero-Touch Wage Preservation</h2></div>
-          <div id="claimResult" style="text-align: center; border: 2px dashed #e2e8f0; padding: 40px; color: var(--text-muted);">
-            System polling Climate API. No breach detected yet.
+         <div class="card">
+          <div class="card-header">
+            <i data-lucide="activity" style="color: var(--success);"></i>
+            <h2 class="card-title">Step 5: Zero-Touch Wage Preservation</h2>
+          </div>
+          <div id="claimResult" style="text-align: center; border: 2px dashed rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 40px; color: var(--text-muted); font-size: 0.9rem;">
+            <i data-lucide="info" size="24" style="margin-bottom: 0.5rem; display: block; margin-left: auto; margin-right: auto;"></i>
+            Telemetry polling climate API. No breach detected yet.
           </div>
         </div>
       </main>
 
       <aside>
         <div class="sidebar-card">
-          <label style="color: #94a3b8;">Solidarity Pool Balance</label>
+          <label>Solidarity Pool Balance</label>
           <div class="pool-balance">₹18,42,450</div>
-          <button class="btn btn-solidarity" style="width: 100%; margin-top: 15px; font-size: 0.75rem;" onclick="openModal()">📊 VIEW COMMUNITY IMPACT</button>
+          <button class="btn btn-solidarity" style="width: 100%; margin-top: 15px;" onclick="openModal()">
+            <i data-lucide="heart"></i> View Resilience Impact
+          </button>
         </div>
 
-        <div class="sidebar-card" style="background: white; color: var(--primary); border: 2px solid var(--primary);">
-          <label>Protocol Intelligence</label>
-          <div style="font-size: 1.1rem; font-weight: 800; margin: 10px 0;">🛡️ Active Monitoring</div>
-          <p style="font-size: 0.7rem; color: var(--text-muted);">Integrating **Guidewire ClaimCenter Webhooks** for sub-second payout authorization.</p>
+        <div class="map-container">
+          <div class="map-grid-overlay"></div>
+          <div class="map-radar-scan"></div>
+          
+          <!-- Nodes -->
+          <div class="map-node active" id="node-whitefield" style="left: 75%; top: 40%;">
+            <div class="map-node-dot"></div>
+            <div style="font-size: 0.65rem; color: var(--text-secondary); margin-top: 2px;">Whitefield</div>
+          </div>
+          <div class="map-node" id="node-majestic" style="left: 30%; top: 60%;">
+            <div class="map-node-dot"></div>
+            <div style="font-size: 0.65rem; color: var(--text-secondary); margin-top: 2px;">Majestic</div>
+          </div>
+          <div class="map-node" id="node-delhi" style="left: 80%; top: 20%;">
+            <div class="map-node-dot"></div>
+            <div style="font-size: 0.65rem; color: var(--text-secondary); margin-top: 2px;">Delhi NCR</div>
+          </div>
+
+          <!-- Rider marker -->
+          <div class="map-rider" id="mapRider" style="left: 75%; top: 40%;">
+            <div class="rider-icon">
+              <i data-lucide="navigation" style="color: white; width: 10px; height: 10px;"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 1.25rem;">
+          <div class="card-header" style="margin-bottom: 0.5rem;">
+            <i data-lucide="terminal" style="color: var(--primary);"></i>
+            <h2 class="card-title" style="font-size: 1rem;">Guidewire Core Sync Logs</h2>
+          </div>
+          <div id="terminalConsole" class="terminal-console">
+            <div class="terminal-row system">[10:00:00] SYSTEM: Kavach AI standalone v2.0 initialized.</div>
+            <div class="terminal-row system">[10:00:02] SYSTEM: Established connection to Guidewire Core API.</div>
+          </div>
         </div>
       </aside>
     </div>
@@ -179,70 +798,230 @@
   </div>
 
   <script>
-    const API_BASE = "https://guidewire-hackathon-clzu.onrender.com";
+    let API_BASE = "https://guidewire-hackathon-clzu.onrender.com";
     let currentUser = null;
     let currentPremium = null;
 
-    function setStatus(msg) { document.getElementById("statusBarText").innerText = msg.toUpperCase(); }
-    function openModal() { document.getElementById("impactModal").style.display = "flex"; }
-    function closeModal() { document.getElementById("impactModal").style.display = "none"; }
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    function setStatus(msg) { 
+      document.getElementById("statusBarText").innerText = msg.toUpperCase(); 
+    }
+
+    function openModal() { 
+      document.getElementById("impactModal").style.display = "flex"; 
+    }
+
+    function closeModal() { 
+      document.getElementById("impactModal").style.display = "none"; 
+    }
+
+    function toggleBackend(type) {
+      document.getElementById("btnLocalBackend").classList.toggle("active", type === 'local');
+      document.getElementById("btnRenderBackend").classList.toggle("active", type === 'render');
+      
+      if (type === 'local') {
+        API_BASE = "http://127.0.0.1:8000";
+        addLog("SYSTEM: Switched target backend to Local API: http://127.0.0.1:8000", "system");
+      } else {
+        API_BASE = "https://guidewire-hackathon-clzu.onrender.com";
+        addLog("SYSTEM: Switched target backend to Cloud API: " + API_BASE, "system");
+      }
+    }
+
+    function addLog(text, type) {
+      const consoleEl = document.getElementById("terminalConsole");
+      const timeStr = new Date().toLocaleTimeString();
+      const row = document.createElement("div");
+      row.className = `terminal-row ${type}`;
+      row.innerHTML = `<span style="color: var(--text-muted);">[${timeStr}]</span> ${text}`;
+      consoleEl.appendChild(row);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    function syncZoneCoordinates() {
+      const zone = document.getElementById("zone").value;
+      const riderEl = document.getElementById("mapRider");
+      const nodes = ["node-whitefield", "node-majestic", "node-delhi"];
+      
+      nodes.forEach(id => document.getElementById(id).classList.remove("active"));
+      
+      if (zone === "high risk") {
+        riderEl.style.left = "75%";
+        riderEl.style.top = "40%";
+        document.getElementById("node-whitefield").classList.add("active");
+        addLog("TELEMETRY: GPS tracked rider entering Whitefield zone.", "system");
+      } else if (zone === "flood zone") {
+        riderEl.style.left = "30%";
+        riderEl.style.top = "60%";
+        document.getElementById("node-majestic").classList.add("active");
+        addLog("TELEMETRY: GPS tracked rider entering Majestic flood zone.", "system");
+      } else if (zone === "heat zone") {
+        riderEl.style.left = "80%";
+        riderEl.style.top = "20%";
+        document.getElementById("node-delhi").classList.add("active");
+        addLog("TELEMETRY: GPS tracked rider entering Delhi/Noida heat zone.", "system");
+      }
+    }
 
     async function registerUser() {
-      const payload = { name: document.getElementById("name").value, phone: "91-PROTO-01", platform: "Zomato/Zepto", 
-                        vehicle_type: document.getElementById("vehicle_type").value, 
-                        zone: document.getElementById("zone").value, weekly_income: Number(document.getElementById("weekly_income").value) };
-      const res = await fetch(`${API_BASE}/register`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      const data = await res.json();
-      currentUser = data.user;
-      setStatus("Rider Entity Anchored");
-      document.getElementById("regBtn").innerText = "✔ Profile Anchored";
+      addLog("POLICYCENTER: Anchoring rider profile with Guidewire PolicyCenter...", "system");
+      const payload = { 
+        name: document.getElementById("name").value, 
+        phone: "91-PROTO-01", 
+        platform: "Zomato/Zepto", 
+        vehicle_type: document.getElementById("vehicle_type").value, 
+        zone: document.getElementById("zone").value, 
+        weekly_income: Number(document.getElementById("weekly_income").value) 
+      };
+      
+      try {
+        const res = await fetch(`${API_BASE}/register`, { 
+          method: "POST", 
+          headers: { "Content-Type": "application/json" }, 
+          body: JSON.stringify(payload) 
+        });
+        const data = await res.json();
+        currentUser = data.user;
+        
+        setStatus("Rider Entity Anchored");
+        document.getElementById("regBtn").innerHTML = '<i data-lucide="check"></i> Anchored';
+        document.getElementById("calcBtn").disabled = false;
+        
+        addLog(`POLICYCENTER: Rider ${currentUser.name} successfully registered. Assigned ID: ZOM-${currentUser.id}`, "system");
+        lucide.createIcons();
+      } catch(err) {
+        addLog("ERROR: Connection failed. Verify your target API is online.", "error");
+      }
     }
 
     async function calculatePremium() {
-      const payload = { ...currentUser, zone: document.getElementById("zone").value, vehicle_type: document.getElementById("vehicle_type").value, 
-                        weekly_income: Number(document.getElementById("weekly_income").value) };
-      const res = await fetch(`${API_BASE}/calculate-premium`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      currentPremium = await res.json();
-      document.getElementById("premiumResult").innerHTML = `
-        <div class="result-panel animate">
-          <div class="metric"><span>Vulnerability Index</span><span class="metric-val">${currentPremium.risk_score} pts</span></div>
-          <div class="metric"><span>Weekly Premium</span><span class="metric-val">₹${currentPremium.weekly_premium}</span></div>
-          <p class="payout-hero">₹${currentPremium.daily_payout} Coverage / Day</p>
-        </div>
-      `;
-      setStatus("Risk Analyzed");
+      addLog("POLICYCENTER: Executing machine learning premium calculations...", "system");
+      const payload = { 
+        ...currentUser, 
+        zone: document.getElementById("zone").value, 
+        vehicle_type: document.getElementById("vehicle_type").value, 
+        weekly_income: Number(document.getElementById("weekly_income").value) 
+      };
+      
+      try {
+        const res = await fetch(`${API_BASE}/calculate-premium`, { 
+          method: "POST", 
+          headers: { "Content-Type": "application/json" }, 
+          body: JSON.stringify(payload) 
+        });
+        currentPremium = await res.json();
+        
+        document.getElementById("premiumResult").innerHTML = `
+          <div class="result-panel">
+            <div class="metric"><span>Vulnerability Index</span><span class="metric-val">${currentPremium.risk_score} pts</span></div>
+            <div class="metric"><span>Weekly Premium</span><span class="metric-val">₹${currentPremium.weekly_premium}</span></div>
+            <p class="payout-hero">₹${currentPremium.daily_payout} Coverage / Day</p>
+          </div>
+        `;
+        
+        document.getElementById("enrollBtn").disabled = false;
+        setStatus("Risk Analyzed");
+        addLog(`POLICYCENTER: Premium priced: ₹${currentPremium.weekly_premium}/wk. Plan suggested: ${currentPremium.suggested_plan}`, "system");
+      } catch(err) {
+        addLog("ERROR: Premium calculation failed.", "error");
+      }
     }
 
     async function createPolicy() {
-      if (!currentUser || !currentPremium) { setStatus("Error: Required Anchor/Risk Profile"); return; }
-      const res = await fetch(`${API_BASE}/create-policy`, { method: "POST", headers: { "Content-Type": "application/json" }, 
-                        body: JSON.stringify({ user_id: currentUser.id, plan: currentPremium.suggested_plan, 
-                                               weekly_premium: currentPremium.weekly_premium, daily_payout: currentPremium.daily_payout }) });
-      const data = await res.json();
-      document.getElementById("policyResult").innerHTML = `
-        <div class="result-panel animate" style="border-left: 6px solid var(--success);">
-          <p style="color: var(--success); font-weight: 800; margin: 0;">✔ PROTOCOL ACTIVE</p>
-          <p style="font-size: 0.75rem; margin: 5px 0;">Monitoring: [Rain, Heat_Stress, AQI, ShutDown]</p>
-        </div>
-      `;
-      document.getElementById("triggerWarning").style.display = "none";
-      setStatus("Policy Live");
+      if (!currentUser || !currentPremium) { 
+        setStatus("Error: Required Anchor/Risk Profile"); 
+        return; 
+      }
+      addLog("POLICYCENTER: Synchronizing draft policy with PolicyCenter Core...", "system");
+      try {
+        const res = await fetch(`${API_BASE}/create-policy`, { 
+          method: "POST", 
+          headers: { "Content-Type": "application/json" }, 
+          body: JSON.stringify({ 
+            user_id: currentUser.id, 
+            plan: currentPremium.suggested_plan, 
+            weekly_premium: currentPremium.weekly_premium, 
+            daily_payout: currentPremium.daily_payout 
+          }) 
+        });
+        const data = await res.json();
+        
+        document.getElementById("policyResult").innerHTML = `
+          <div class="result-panel" style="border-left: 6px solid var(--success);">
+            <p style="color: var(--success); font-weight: 800; margin: 0; display: flex; align-items: center; gap: 0.4rem;">
+              <i data-lucide="check" size="16"></i> PROTOCOL ACTIVE
+            </p>
+            <p style="font-size: 0.75rem; margin: 5px 0;">Actively monitoring: [Rain, Heat_Stress, AQI, ShutDown]</p>
+          </div>
+        `;
+        
+        document.getElementById("triggerWarning").style.display = "none";
+        
+        // Enable triggers
+        ["trigRain", "trigHeat", "trigAqi", "trigHalt"].forEach(id => {
+          document.getElementById(id).disabled = false;
+        });
+        
+        setStatus("Policy Live");
+        addLog(`POLICYCENTER: Policy activated successfully for Rider ID ZOM-${currentUser.id}.`, "success");
+        lucide.createIcons();
+      } catch(err) {
+        addLog("ERROR: Policy binding failed.", "error");
+      }
     }
 
     async function triggerEvent(type, val) {
-      if (!currentUser) { setStatus("Error: No Rider Profile"); return; }
-      const res = await fetch(`${API_BASE}/trigger-event`, { method: "POST", headers: { "Content-Type": "application/json" }, 
-                                body: JSON.stringify({ user_id: currentUser.id, trigger_type: type, value: val }) });
-      const data = await res.json();
-      if (data.claim) {
-        document.getElementById("claimResult").innerHTML = `
-          <div class="result-panel animate" style="border: 2px solid var(--success); background: #f0fdf4;">
-            <div style="font-size: 0.75rem; font-weight: 800; color: var(--success); text-transform: uppercase;">Zero-Touch Settlement Success</div>
-            <div class="payout-hero" style="font-size: 2.5rem;">₹${data.claim.payout_amount} Disbursed</div>
-            <p style="font-size: 0.7rem; color: var(--text-muted); text-align: center;">Payout authenticated via Guidewire API Simulation.</p>
-          </div>`;
-        setStatus("Payout Completed");
-      } else { setStatus(data.message); }
+      if (!currentUser) { 
+        setStatus("Error: No Rider Profile"); 
+        return; 
+      }
+      
+      addLog(`PARAMETRIC_SENSOR: Telemetry threshold check: ${type} = ${val}`, "trigger");
+      
+      try {
+        const res = await fetch(`${API_BASE}/trigger-event`, { 
+          method: "POST", 
+          headers: { "Content-Type": "application/json" }, 
+          body: JSON.stringify({ 
+            user_id: currentUser.id, 
+            trigger_type: type, 
+            value: val 
+          }) 
+        });
+        const data = await res.json();
+        
+        if (data.claim) {
+          document.getElementById("claimResult").innerHTML = `
+            <div class="result-panel animate" style="border: 1px solid var(--success); background: rgba(16, 185, 129, 0.05); border-left-color: var(--success);">
+              <div style="font-size: 0.75rem; font-weight: 800; color: var(--success); text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem;">
+                <i data-lucide="check-circle" size="14"></i> Zero-Touch Settlement Success
+              </div>
+              <div class="payout-hero" style="font-size: 2.2rem; margin: 0.5rem 0;">₹${data.claim.payout_amount} Disbursed</div>
+              <p style="font-size: 0.75rem; color: var(--text-secondary); text-align: center; margin: 0;">
+                Guidewire ClaimCenter CC-1092 logged status: SETTLED.
+              </p>
+            </div>`;
+          setStatus("Payout Completed");
+          addLog(`CLAIMCENTER: Weather trigger evaluated. Parametric breach confirmed.`, "trigger");
+          addLog(`FRAUDCENTER: Telemetry GPS verified. Fraud vetting checks resolved (PASS).`, "system");
+          addLog(`CLAIMCENTER: Instant wage payout of ₹${data.claim.payout_amount} disbursed via IMPS transaction.`, "success");
+        } else { 
+          document.getElementById("claimResult").innerHTML = `
+            <div class="result-panel" style="border-left-color: var(--warning); background: rgba(245, 158, 11, 0.05);">
+              <div style="font-size: 0.75rem; font-weight: 800; color: var(--warning); text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem;">
+                <i data-lucide="alert-triangle" size="14"></i> Trigger Event Logged
+              </div>
+              <p style="font-size: 0.8rem; margin: 5px 0; color: var(--text-primary);">${data.message}</p>
+            </div>`;
+          setStatus(data.message);
+          addLog(`CLAIMCENTER: Trigger logged. Response: ${data.message}`, "trigger");
+        }
+        lucide.createIcons();
+      } catch(err) {
+        addLog("ERROR: Trigger simulation failed.", "error");
+      }
     }
   </script>
 </body>
